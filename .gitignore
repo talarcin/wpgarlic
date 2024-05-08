@@ -4,7 +4,7 @@ venv/
 data/plugin_fuzz_results/scanned/
 data/object_fuzz_results/scanned/
 nonces-tuncay-desktop.txt
-vulnerable-wp-plugin.zip
+wp-plugins/
 :GARLIC
 .idea
 /data_archive
