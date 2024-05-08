@@ -2,3 +2,6 @@ __pycache__
 *.swp
 venv/
 data/plugin_fuzz_results/scanned/
+nonces-tuncay-desktop.txt
+vulnerable-wp-plugin.zip
+:GARLIC
