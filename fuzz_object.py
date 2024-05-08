@@ -110,7 +110,7 @@ def fuzz_object(
                 if object_type != ObjectType.plugin:
                     raise NotImplementedError()
 
-                install_plugin_from_file(plugin_path)
+                install_plugin_from_file(slug_or_path)
                 activation_problem = None
             elif revision:
                 if object_type != ObjectType.plugin:
