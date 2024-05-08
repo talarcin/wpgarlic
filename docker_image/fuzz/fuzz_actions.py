@@ -11,18 +11,33 @@ plugin_slug = sys.argv[3]
 become_admin = len(sys.argv) > 4 and sys.argv[4] == "BECOME_ADMIN"
 
 if actions_to_fuzz == "ALL":
-    actions_to_fuzz = subprocess.check_output(
+    ajax_actions_to_fuzz = subprocess.check_output(
         [
             "php.orig",
             "/fuzzer/get_fuzzable_entrypoints/get_ajax_actions_to_fuzz.php",
         ]
     )
 
-    actions_to_fuzz = [
+    ajax_actions_to_fuzz = [
         action.strip().replace("AJAX: ", "")
-        for action in actions_to_fuzz.decode("ascii", errors="ignore").split("\n")
+        for action in ajax_actions_to_fuzz.decode("ascii", errors="ignore").split("\n")
         if action.startswith("AJAX: ")
     ]
+
+    admin_post_actions_to_fuzz = subprocess.check_output(
+        [
+            "php.orig",
+            "/fuzzer/get_fuzzable_entrypoints/get_admin_post_actions_to_fuzz.php",
+        ]
+    )
+
+    admin_post_actions_to_fuzz = [
+        action.strip().replace("ADMIN: ", "")
+        for action in admin_post_actions_to_fuzz.decode("ascii", errors="ignore").split("\n")
+        if action.startswith("ADMIN: ")
+    ]
+
+    actions_to_fuzz = ajax_actions_to_fuzz + admin_post_actions_to_fuzz;
 
     random.shuffle(actions_to_fuzz)
 else:
@@ -31,6 +46,10 @@ else:
 actions_to_skip = load_blocklists("actions", plugin_slug)
 
 command_results = []
+
+sys.stderr.write(f"Fuzzing {actions_to_fuzz}\n")
+sys.stderr.flush()
+
 for action in actions_to_fuzz:
     if action in actions_to_skip:
         continue

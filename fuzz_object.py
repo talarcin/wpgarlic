@@ -159,14 +159,14 @@ def fuzz_object(
                 {
                     "actions",
                     "actions_admin",
-                    "menu_subscriber",
-                    "menu_admin",
-                    "files",
-                    "pages_subscriber",
-                    "pages_not_logged_in",
-                    "rest_routes",
-                    "rest_routes_admin",
-                    "shortcodes",
+                    # "menu_subscriber",
+                    # "menu_admin",
+                    # "files",
+                    # "pages_subscriber",
+                    # "pages_not_logged_in",
+                    # "rest_routes",
+                    # "rest_routes_admin",
+                    # "shortcodes",
                 }
                 & set(enabled_features)
             )
