@@ -8,3 +8,5 @@ wp-plugins/
 :GARLIC
 .idea
 /data_archive
+
+./psalm/vendor
