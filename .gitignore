@@ -10,3 +10,4 @@ wp-plugins/
 /data_archive
 
 /psalm/vendor
+/psalm/plugin
