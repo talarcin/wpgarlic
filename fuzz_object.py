@@ -33,25 +33,25 @@ def get_dependencies(slug: str, description: str) -> List[str]:
         dependencies.append("elementor")
 
     if (
-        "the-events-calendar" in slug or "the-events-calendar" in description.lower()
+            "the-events-calendar" in slug or "the-events-calendar" in description.lower()
     ) and slug != "the-events-calendar":
         dependencies.append("the-events-calendar")
     return dependencies
 
 
 def fuzz_object(
-    object_type: ObjectType,
-    slug_or_path: str,
-    version: Optional[str] = None,
-    revision: Optional[str] = None,
-    enabled_features: Optional[str] = None,
-    skip_fuzzing_second_time_without_dependencies: bool = False,
-    actions_to_fuzz: str = "ALL",
-    shortcodes_to_fuzz: str = "ALL",
-    rest_routes_to_fuzz: str = "ALL",
-    menu_actions_to_fuzz: str = "ALL",
-    file_or_folder_to_fuzz: str = "OBJECT_ROOT",
-    output_path: str = "data/object_fuzz_results",
+        object_type: ObjectType,
+        slug_or_path: str,
+        version: Optional[str] = None,
+        revision: Optional[str] = None,
+        enabled_features: Optional[str] = None,
+        skip_fuzzing_second_time_without_dependencies: bool = False,
+        actions_to_fuzz: str = "ALL",
+        shortcodes_to_fuzz: str = "ALL",
+        rest_routes_to_fuzz: str = "ALL",
+        menu_actions_to_fuzz: str = "ALL",
+        file_or_folder_to_fuzz: str = "OBJECT_ROOT",
+        output_path: str = "data/object_fuzz_results",
 ):
     if not enabled_features:
         enabled_features = config.DEFAULT_ENABLED_FEATURES
@@ -237,8 +237,8 @@ def fuzz_object(
             }
         random_token = binascii.hexlify(os.urandom(16)).decode("ascii")
         with open(
-            os.path.join(output_path, f"{slug}_{random_token}.json"),
-            "w",
+                os.path.join(output_path, f"{slug}_{random_token}.json"),
+                "w",
         ) as f:
             json.dump(output, f)
 

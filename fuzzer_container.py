@@ -284,6 +284,19 @@ def install_plugin_from_svn(slug: str, revision: str):
     )
 
 
+def run_composer_install():
+    return json.loads(
+        run_in_container_and_get_output(
+            [
+                "python3",
+                "/fuzzer/fuzz/install_composer_packages.py"
+            ]
+        )
+    )
+
+
+
+
 def fuzz_file_or_folder(payload_id: str, path: str):
     return json.loads(
         run_in_container_and_get_output(

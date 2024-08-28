@@ -1,0 +1,6 @@
+{
+    "name": "tuncay/docker_image",
+    "require": {
+        "tuncay/psalm-wp-taint": "dev-main"
+    }
+}
