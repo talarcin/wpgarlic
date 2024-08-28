@@ -1,20 +1,3 @@
-FROM php:7.4-cli AS php-cli-stage
-
-RUN apt-get update && apt-get install -y \
-    zlib1g-dev \
-    libzip-dev \
-    unzip
-RUN docker-php-ext-install zip
-
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-COPY composer.* ./
-
-RUN composer self-update
-RUN composer update
-RUN composer install
-
-RUN composer --version && php -v
-
 FROM wordpress:6.1.1-php7.4-apache
 
 RUN apt-get update
@@ -42,10 +25,6 @@ RUN apt-get -yy install \
     subversion \
     zip \
     wget
-
-COPY --from=php-cli-stage /vendor/ ./vendor/
-COPY --from=php-cli-stage /usr/bin/composer /usr/bin/composer
-COPY --from=php-cli-stage composer.* ./
 
 RUN cp /usr/local/bin/php /usr/local/bin/php.orig
 COPY compile_php.sh /fuzzer/compile_php.sh
