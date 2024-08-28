@@ -1,5 +1,12 @@
 #!/bin/bash
 
+PLUGIN_SLUG=$1
+
+if [[ $PLUGIN_SLUG == "" ]]; then
+  echo "Please input a plugin slug to "
+  exit 0
+fi
+
 set -e
 
 cd "$(dirname "$0")/.."
@@ -40,6 +47,13 @@ else
 fi
 
 # Install composer packages
+echo "Installing composer packages..."
 cd ./psalm
 composer update
 composer install
+
+
+
+
+
+
