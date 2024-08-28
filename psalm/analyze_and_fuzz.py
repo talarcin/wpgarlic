@@ -9,13 +9,14 @@ from rich import print
 
 
 @click.command()
-@click.argument("plugin_slug")
-@click.option("--version", required=True, help="Plugin version")
+@click.option("--plugin_slug", required=True, prompt="Plugin slug", help="Plugin slug")
+@click.option("--version", required=True, prompt="Plugin version", help="Plugin version")
 def analyze(plugin_slug, version):
     print("Downloading [bold]{0}[/bold] with version [bold]{1}[/bold]".format(plugin_slug, version))
     req = requests.get("https://downloads.wordpress.org/plugin/{0}.{1}.zip".format(plugin_slug, version))
 
     if req.ok:
+        open("./wp-plugins/{0}.zip".format(plugin_slug), "wb").write(req.content)
         print("Extracting plugin to [bold]/psalm/plugin[/bold]...")
         with zipfile.ZipFile(io.BytesIO(req.content)) as zf:
 
@@ -31,6 +32,15 @@ def analyze(plugin_slug, version):
               "white] are correct.[/red]")
         exit(1)
 
-    subprocess.call(["./bin/run_analysis_then_fuzz"])
+    print("Installing composer packages...")
+    print(os.getcwd())
+    os.chdir("psalm")
+    print(os.getcwd())
+
+    subprocess.call(["composer", "update"])
+    subprocess.call(["composer", "install"])
+
+    subprocess.call(["./vendor/bin/analyze", "./out/output", "./plugin/"])
+
 
 analyze()

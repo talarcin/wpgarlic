@@ -1,12 +1,5 @@
 #!/bin/bash
 
-PLUGIN_SLUG=$1
-
-if [[ $PLUGIN_SLUG == "" ]]; then
-  echo "Please input a plugin slug to "
-  exit 0
-fi
-
 set -e
 
 cd "$(dirname "$0")/.."
@@ -46,14 +39,8 @@ else
   # done
 fi
 
-# Install composer packages
-echo "Installing composer packages..."
-cd ./psalm
-composer update
-composer install
 
+. ./bin/create_and_enter_venv
 
-
-
-
+python ./psalm/analyze_and_fuzz.py
 
