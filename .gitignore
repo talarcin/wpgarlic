@@ -9,4 +9,4 @@ wp-plugins/
 .idea
 /data_archive
 
-./psalm/vendor
+/psalm/vendor
