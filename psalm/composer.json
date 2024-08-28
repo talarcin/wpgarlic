@@ -1,0 +1,12 @@
+{
+    "name": "tuncay/psalm",
+    "authors": [
+        {
+            "name": "Tuncay Alarcin",
+            "email": "tuncayalarcin@gmail.com"
+        }
+    ],
+    "require": {
+        "tuncay/psalm-wp-taint": "dev-main"
+    }
+}

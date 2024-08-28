@@ -1,0 +1,34 @@
+#!/bin/bash
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+COMPOSER_WHICH=1
+
+if [[ $(which compoer | grep -o composer) == "composer" ]]; then
+  COMPOSER_WHICH=1
+else
+  COMPOSER_WHICH=0
+fi
+
+if [[ $COMPOSER_WHICH -ne 0 ]]; then
+  echo "Composer found"
+else
+  echo "Composer not found"
+  echo "Shall we install composer? (y/n)"
+
+  while true; do
+    read -s -n 1 key
+    case $key in y|Y)
+      echo "Installing..."
+      ./psalm/build_composer.sh
+      exit 0
+      ;;
+      n|N)
+      echo "Not installing!"
+      exit 0
+      ;;
+    esac
+  done
+fi
