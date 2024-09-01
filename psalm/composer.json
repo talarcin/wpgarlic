@@ -1,5 +1,6 @@
 {
     "name": "tuncay/psalm",
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "Tuncay Alarcin",
@@ -7,6 +8,6 @@
         }
     ],
     "require": {
-        "tuncay/psalm-wp-taint": "dev-main"
+        "tuncay/psalm-wp-taint": "dev-dev-php8"
     }
 }

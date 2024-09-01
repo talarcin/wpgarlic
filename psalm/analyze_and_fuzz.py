@@ -13,7 +13,22 @@ from rich import print
 @click.option("--version", required=True, prompt="Plugin version", help="Plugin version")
 def analyze(plugin_slug, version):
     print("Downloading [bold]{0}[/bold] with version [bold]{1}[/bold]".format(plugin_slug, version))
-    req = requests.get("https://downloads.wordpress.org/plugin/{0}.{1}.zip".format(plugin_slug, version))
+
+    # Check if version of plugin is downloadable
+    plugin_info_object: dict = requests.get(
+        "https://api.wordpress.org/plugins/info/1.2/?action=plugin_information&request[slug]={0}".format(
+            plugin_slug)).json()
+
+    if (len(plugin_info_object.keys()) == 1 and "error" in plugin_info_object.keys()) or (
+            "versions" in plugin_info_object.keys() and not f"{version}" in plugin_info_object["versions"].keys()):
+        print("[red]Couldn't find a download link for [white]{0}[/white] and version [white]{1}[/white].[/red]".format(
+            plugin_slug, version))
+        exit(1)
+
+    download_link: str = plugin_info_object["versions"].get(version)
+    print("Downloading [bold]{0}[/bold] [bold]v{1}[/bold] from {2}".format(plugin_slug, version, download_link))
+
+    req = requests.get(download_link)
 
     if req.ok:
         open("./wp-plugins/{0}.zip".format(plugin_slug), "wb").write(req.content)
@@ -39,6 +54,8 @@ def analyze(plugin_slug, version):
 
     subprocess.call(["composer", "update"])
     subprocess.call(["composer", "install"])
+    subprocess.call(["./vendor/bin/psalm", "--init"])
+    subprocess.call(["./vendor/bin/psalm-plugin", "enable", "tuncay/psalm-wp-taint"])
 
     subprocess.call(["./vendor/bin/analyze", "./out/output", "./plugin/"])
 
