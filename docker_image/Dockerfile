@@ -63,6 +63,8 @@ COPY set_admin.php /fuzzer/set_admin.php
 COPY user.php /fuzzer/user.php
 COPY blocklists /fuzzer/blocklists
 
+COPY psalm-result /fuzzer/psalm-result
+
 COPY get_fuzzable_entrypoints /fuzzer/get_fuzzable_entrypoints
 COPY fuzz /fuzzer/fuzz
 COPY execute /fuzzer/execute
