@@ -59,7 +59,10 @@ def analyze(plugin_slug, version):
     os.chdir("..")
     print("[green bold]Taint analysis finished successfully.[/green bold]")
     print("\n")
-    print("Starting fuzzer to fuzz plugin [bold]{0}[/bold] from file [bold]{0}.zip[/bold]".format(plugin_slug))
+    print("Starting fuzzer to fuzz plugin [bold]{0}[/bold] with version {1} from file [bold]{0}.zip[/bold]".format(
+        plugin_slug, version))
+    print("Copying psalm result files.")
+    subprocess.call(["cp", "-r", "./psalm/psalm-result/", "./docker_image/"])
     subprocess.call(["./bin/fuzz_object", "plugin", "./wp-plugins/{0}.zip".format(plugin_slug)])
 
 
