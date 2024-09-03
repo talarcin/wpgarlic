@@ -57,7 +57,7 @@ def analyze(plugin_slug, version):
     subprocess.call(["./vendor/bin/psalm", "--init"])
     subprocess.call(["./vendor/bin/psalm-plugin", "enable", "tuncay/psalm-wp-taint"])
 
-    subprocess.call(["./vendor/bin/analyze", "./out/output", "./plugin/"])
+    subprocess.call(["./vendor/bin/analyze", "output", "./plugin/"])
 
 
 analyze()

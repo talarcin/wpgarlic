@@ -8,6 +8,6 @@
         }
     ],
     "require": {
-        "tuncay/psalm-wp-taint": "dev-dev-php8"
+        "tuncay/psalm-wp-taint": "dev-switch-to-php8"
     }
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ac7d376e5265b346ac93c3d9ef77d80a",
+    "content-hash": "e937eea81ecbab080d3d69c015aedb69",
     "packages": [
         {
             "name": "adhocore/cli",
@@ -926,16 +926,16 @@
         },
         {
             "name": "fidry/cpu-core-counter",
-            "version": "1.1.0",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/theofidry/cpu-core-counter.git",
-                "reference": "f92996c4d5c1a696a6a970e20f7c4216200fcc42"
+                "reference": "8520451a140d3f46ac33042715115e290cf5785f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/theofidry/cpu-core-counter/zipball/f92996c4d5c1a696a6a970e20f7c4216200fcc42",
-                "reference": "f92996c4d5c1a696a6a970e20f7c4216200fcc42",
+                "url": "https://api.github.com/repos/theofidry/cpu-core-counter/zipball/8520451a140d3f46ac33042715115e290cf5785f",
+                "reference": "8520451a140d3f46ac33042715115e290cf5785f",
                 "shasum": ""
             },
             "require": {
@@ -975,7 +975,7 @@
             ],
             "support": {
                 "issues": "https://github.com/theofidry/cpu-core-counter/issues",
-                "source": "https://github.com/theofidry/cpu-core-counter/tree/1.1.0"
+                "source": "https://github.com/theofidry/cpu-core-counter/tree/1.2.0"
             },
             "funding": [
                 {
@@ -983,7 +983,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-02-07T09:43:46+00:00"
+            "time": "2024-08-06T10:04:20+00:00"
         },
         {
             "name": "netresearch/jsonmapper",
@@ -1042,12 +1042,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "ba144371652fc11abb104affdb29a1040a0f41ed"
+                "reference": "54139ca49b3b45fcf09257727611caa52cd0c00b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/ba144371652fc11abb104affdb29a1040a0f41ed",
-                "reference": "ba144371652fc11abb104affdb29a1040a0f41ed",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/54139ca49b3b45fcf09257727611caa52cd0c00b",
+                "reference": "54139ca49b3b45fcf09257727611caa52cd0c00b",
                 "shasum": ""
             },
             "require": {
@@ -1093,7 +1093,7 @@
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
                 "source": "https://github.com/nikic/PHP-Parser/tree/master"
             },
-            "time": "2024-08-15T07:22:56+00:00"
+            "time": "2024-09-01T10:48:37+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -1640,12 +1640,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "cc2dd55c49e04b10cec4aa6e47e099a2d1656845"
+                "reference": "ee7ee22b1dabcff731b7d79d3633c96251ad8404"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/cc2dd55c49e04b10cec4aa6e47e099a2d1656845",
-                "reference": "cc2dd55c49e04b10cec4aa6e47e099a2d1656845",
+                "url": "https://api.github.com/repos/symfony/console/zipball/ee7ee22b1dabcff731b7d79d3633c96251ad8404",
+                "reference": "ee7ee22b1dabcff731b7d79d3633c96251ad8404",
                 "shasum": ""
             },
             "require": {
@@ -1725,7 +1725,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-08-15T22:49:18+00:00"
+            "time": "2024-08-30T15:40:32+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -2356,16 +2356,16 @@
         },
         {
             "name": "tuncay/psalm-wp-taint",
-            "version": "dev-dev-php8",
+            "version": "dev-switch-to-php8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/talarcin/psalm-wp-taint.git",
-                "reference": "37d8d206ba4a97fef33a56c3db2de3fedea54682"
+                "reference": "3687e768a112e9c080d3b74488388e679a1d35bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/talarcin/psalm-wp-taint/zipball/37d8d206ba4a97fef33a56c3db2de3fedea54682",
-                "reference": "37d8d206ba4a97fef33a56c3db2de3fedea54682",
+                "url": "https://api.github.com/repos/talarcin/psalm-wp-taint/zipball/3687e768a112e9c080d3b74488388e679a1d35bc",
+                "reference": "3687e768a112e9c080d3b74488388e679a1d35bc",
                 "shasum": ""
             },
             "require": {
@@ -2407,9 +2407,9 @@
             "description": "A psalm plugin that adds stubs for psalm to define custom taint sinks for wordpress projects",
             "support": {
                 "issues": "https://github.com/talarcin/psalm-wp-taint/issues",
-                "source": "https://github.com/talarcin/psalm-wp-taint/tree/dev-php8"
+                "source": "https://github.com/talarcin/psalm-wp-taint/tree/switch-to-php8"
             },
-            "time": "2024-08-29T13:04:24+00:00"
+            "time": "2024-09-02T12:02:24+00:00"
         },
         {
             "name": "vimeo/psalm",
