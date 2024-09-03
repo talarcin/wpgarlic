@@ -58,6 +58,7 @@ def analyze(plugin_slug, version):
     subprocess.call(["./vendor/bin/analyze", "output", "./plugin/"])
     os.chdir("..")
     print("[green bold]Taint analysis finished successfully.[/green bold]")
+    print("\n")
     print("Starting fuzzer to fuzz plugin [bold]{0}[/bold] from file [bold]{0}.zip[/bold]".format(plugin_slug))
     subprocess.call(["./bin/fuzz_object", "plugin", "./wp-plugins/{0}.zip".format(plugin_slug)])
 
