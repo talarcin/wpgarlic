@@ -15,10 +15,9 @@ fi
 
 if [[ $COMPOSER_WHICH -ne 0 ]]; then
   COMPOSER_VERSION=$(composer --version | cut -d " " -f3)
-  echo "Composer found."
-  echo "Installed version $COMPOSER_VERSION"
+  echo "Composer found. Installed version $COMPOSER_VERSION"
 else
-  echo "Composer not found"
+  echo "Composer not found."
   echo "Please make sure composer is installed and available via your PATH variable"
   exit 0
   # automatic installation of composer, maybe add later

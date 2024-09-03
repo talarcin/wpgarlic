@@ -16,12 +16,12 @@ sys.stderr.write("Getting fuzzable actions list...\n")
 with open("../../../fuzzer/psalm-result/actions_to_fuzz-output.json") as f:
     fuzzable_actions = json.load(f)
 
-sys.stderr.write("Going to fuzz following actions:\n")
-for action in fuzzable_actions:
-    sys.stderr.write("{}\n".format(action))
-sys.stderr.flush()
+if len(fuzzable_actions) == 0:
+    sys.stderr.write("No fuzzable actions found.\n")
+    sys.stderr.flush()
 
 if actions_to_fuzz == "ALL":
+    # TODO: We get a non-zero exit status code here
     ajax_actions_to_fuzz = subprocess.check_output(
         [
             "php.orig",
