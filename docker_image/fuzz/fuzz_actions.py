@@ -9,6 +9,7 @@ payload_id = sys.argv[1]
 actions_to_fuzz = sys.argv[2]
 plugin_slug = sys.argv[3]
 become_admin = len(sys.argv) > 4 and sys.argv[4] == "BECOME_ADMIN"
+fuzzable_actions = json.loads("/fuzzer/psalm-result/actions_to_fuzz-output.json")
 
 if actions_to_fuzz == "ALL":
     ajax_actions_to_fuzz = subprocess.check_output(
