@@ -42,15 +42,13 @@ def analyze(plugin_slug, version):
             print("[green]Extraction done[/green]")
             zf.close()
     else:
-        print("[red]Failed to download plugin.[/red]".format(plugin_slug, version))
+        print("[red]Failed to download plugin.[/red]")
         print("[red]Please make sure that the [bold white]plugin slug[/bold white] and [bold white]version[/bold "
               "white] are correct.[/red]")
         exit(1)
 
     print("Installing composer packages...")
-    print(os.getcwd())
     os.chdir("psalm")
-    print(os.getcwd())
 
     subprocess.call(["composer", "update"])
     subprocess.call(["composer", "install"])
@@ -58,6 +56,7 @@ def analyze(plugin_slug, version):
     subprocess.call(["./vendor/bin/psalm-plugin", "enable", "tuncay/psalm-wp-taint"])
 
     subprocess.call(["./vendor/bin/analyze", "output", "./plugin/"])
-
+    os.chdir("..")
+    subprocess.call(["./bin/fuzz_object", "plugin", "./wp-plugins/{0}.zip".format(plugin_slug)])
 
 analyze()
