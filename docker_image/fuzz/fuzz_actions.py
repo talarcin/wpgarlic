@@ -1,4 +1,5 @@
 import json
+import os
 import random
 import subprocess
 import sys
@@ -9,7 +10,16 @@ payload_id = sys.argv[1]
 actions_to_fuzz = sys.argv[2]
 plugin_slug = sys.argv[3]
 become_admin = len(sys.argv) > 4 and sys.argv[4] == "BECOME_ADMIN"
-fuzzable_actions = json.loads("/fuzzer/psalm-result/actions_to_fuzz-output.json")
+
+sys.stderr.write("Getting fuzzable actions list...\n")
+
+with open("../../../fuzzer/psalm-result/actions_to_fuzz-output.json") as f:
+    fuzzable_actions = json.load(f)
+
+sys.stderr.write("Going to fuzz following actions:\n")
+for action in fuzzable_actions:
+    sys.stderr.write("{}\n".format(action))
+sys.stderr.flush()
 
 if actions_to_fuzz == "ALL":
     ajax_actions_to_fuzz = subprocess.check_output(
@@ -53,6 +63,8 @@ sys.stderr.flush()
 
 for action in actions_to_fuzz:
     if action in actions_to_skip:
+        continue
+    if action not in fuzzable_actions:
         continue
 
     sys.stderr.write(f"Fuzzing: {action}\n")
