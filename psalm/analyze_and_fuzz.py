@@ -12,7 +12,8 @@ from rich import print
 @click.command()
 @click.option("--plugin_slug", required=True, help="Slug of the plugin")
 @click.option("--version", required=True, help="Version number of the plugin")
-def analyze(plugin_slug, version):
+@click.option("--psalm", is_flag=True, default=False, help="Don't use psalm taint analysis")
+def analyze(plugin_slug, version, no_psalm):
     print("Downloading [bold]{0}[/bold] with version [bold]{1}[/bold]".format(plugin_slug, version))
 
     # Check if version of plugin is downloadable
@@ -48,22 +49,23 @@ def analyze(plugin_slug, version):
               "white] are correct.[/red]")
         exit(1)
 
-    print("Installing composer packages...")
-    os.chdir("psalm")
+    if not no_psalm:
+        print("Installing composer packages...")
+        os.chdir("psalm")
 
-    subprocess.call(["composer", "update"])
-    subprocess.call(["composer", "install"])
-    subprocess.call(["./vendor/bin/psalm", "--init"])
-    subprocess.call(["./vendor/bin/psalm-plugin", "enable", "tuncay/psalm-wp-taint"])
+        subprocess.call(["composer", "update"])
+        subprocess.call(["composer", "install"])
+        subprocess.call(["./vendor/bin/psalm", "--init"])
+        subprocess.call(["./vendor/bin/psalm-plugin", "enable", "tuncay/psalm-wp-taint"])
 
-    subprocess.call(["./vendor/bin/analyze", "output", "./plugin/"])
-    os.chdir("..")
-    print("[green bold]Taint analysis finished successfully.[/green bold]")
-    print("\n")
-    print("Starting fuzzer to fuzz plugin [bold]{0}[/bold] with version {1} from file [bold]{0}.zip[/bold]".format(
-        plugin_slug, version))
-    print("Copying psalm result files.")
-    subprocess.call(["cp", "-r", "./psalm/psalm-result/", "./docker_image/"])
+        subprocess.call(["./vendor/bin/analyze", "output", "./plugin/"])
+        os.chdir("..")
+        print("[green bold]Taint analysis finished successfully.[/green bold]")
+        print("\n")
+        print("Starting fuzzer to fuzz plugin [bold]{0}[/bold] with version {1} from file [bold]{0}.zip[/bold]".format(
+            plugin_slug, version))
+        print("Copying psalm result files.")
+        subprocess.call(["cp", "-r", "./psalm/psalm-result/", "./docker_image/"])
 
     start_time = time.time()
     subprocess.call(["./bin/fuzz_object", "plugin", "./wp-plugins/{0}.zip".format(plugin_slug)])
