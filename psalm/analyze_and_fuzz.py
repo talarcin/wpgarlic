@@ -70,7 +70,7 @@ def analyze(plugin_slug, version):
     end_time = time.time()
 
     elapsed_time = end_time - start_time
-    print("Elapsed time is: {0}".format(elapsed_time))
+    print("[bold]Elapsed time is: [green]{0}s[/green][/bold]".format(str(round(elapsed_time, 2))))
 
 
 analyze()
