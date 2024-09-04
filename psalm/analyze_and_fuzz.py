@@ -9,8 +9,8 @@ from rich import print
 
 
 @click.command()
-@click.option("--plugin_slug", required=True, prompt="Plugin slug", help="Plugin slug")
-@click.option("--version", required=True, prompt="Plugin version", help="Plugin version")
+@click.option("--plugin_slug", required=True, help="Slug of the plugin")
+@click.option("--version", required=True, help="Version number of the plugin")
 def analyze(plugin_slug, version):
     print("Downloading [bold]{0}[/bold] with version [bold]{1}[/bold]".format(plugin_slug, version))
 
