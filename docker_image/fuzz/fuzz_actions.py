@@ -11,10 +11,14 @@ actions_to_fuzz = sys.argv[2]
 plugin_slug = sys.argv[3]
 become_admin = len(sys.argv) > 4 and sys.argv[4] == "BECOME_ADMIN"
 
-sys.stderr.write("Getting fuzzable actions list...\n")
+directed = False
+fuzzable_actions = []
 
-with open("../../../fuzzer/psalm-result/actions_to_fuzz-output.json") as f:
-    fuzzable_actions = json.load(f)
+if os.path.isdir("../../../fuzzer/psalm-result/"):
+    sys.stderr.write("Getting fuzzable actions list...\n")
+    directed = True
+    with open("../../../fuzzer/psalm-result/actions_to_fuzz-output.json") as f:
+        fuzzable_actions = json.load(f)
 
 if len(fuzzable_actions) == 0:
     sys.stderr.write("No fuzzable actions found.\n")
@@ -60,7 +64,7 @@ command_results = []
 for action in actions_to_fuzz:
     if action in actions_to_skip:
         continue
-    if action not in fuzzable_actions:
+    if directed and action not in fuzzable_actions:
         continue
 
     sys.stderr.write(f"Fuzzing: {action}\n")
