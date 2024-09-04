@@ -21,7 +21,6 @@ if len(fuzzable_actions) == 0:
     sys.stderr.flush()
 
 if actions_to_fuzz == "ALL":
-    # TODO: We get a non-zero exit status code here
     ajax_actions_to_fuzz = subprocess.check_output(
         [
             "php.orig",
@@ -57,9 +56,6 @@ else:
 actions_to_skip = load_blocklists("actions", plugin_slug)
 
 command_results = []
-
-sys.stderr.write(f"Fuzzing {actions_to_fuzz}\n")
-sys.stderr.flush()
 
 for action in actions_to_fuzz:
     if action in actions_to_skip:
