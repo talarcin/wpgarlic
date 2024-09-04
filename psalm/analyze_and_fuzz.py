@@ -12,7 +12,7 @@ from rich import print
 @click.command()
 @click.option("--plugin_slug", required=True, help="Slug of the plugin")
 @click.option("--version", required=True, help="Version number of the plugin")
-@click.option("--psalm", is_flag=True, default=False, help="Don't use psalm taint analysis")
+@click.option("--no_psalm", is_flag=True, default=False, help="Don't use psalm taint analysis")
 def analyze(plugin_slug, version, no_psalm):
     print("Downloading [bold]{0}[/bold] with version [bold]{1}[/bold]".format(plugin_slug, version))
 
