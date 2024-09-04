@@ -1,6 +1,7 @@
 import io
 import os
 import subprocess
+import time
 import zipfile
 
 import click
@@ -63,7 +64,13 @@ def analyze(plugin_slug, version):
         plugin_slug, version))
     print("Copying psalm result files.")
     subprocess.call(["cp", "-r", "./psalm/psalm-result/", "./docker_image/"])
+
+    start_time = time.time()
     subprocess.call(["./bin/fuzz_object", "plugin", "./wp-plugins/{0}.zip".format(plugin_slug)])
+    end_time = time.time()
+
+    elapsed_time = end_time - start_time
+    print("Elapsed time is: {0}".format(elapsed_time))
 
 
 analyze()

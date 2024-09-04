@@ -41,5 +41,5 @@ fi
 
 . ./bin/create_and_enter_venv
 
-python ./psalm/analyze_and_fuzz.py
+python ./psalm/analyze_and_fuzz.py $@
 
