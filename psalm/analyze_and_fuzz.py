@@ -67,8 +67,8 @@ def analyze(plugin_slug, version, no_psalm):
         print("Copying psalm result files.")
         subprocess.call(["cp", "-r", "./psalm/psalm-result/", "./docker_image/"])
     else:
-        if os.path.isdir("./docker_image/psalm-result"):
-            os.system("rm -rf ./docker_image/psalm-result")
+        if os.path.isfile("./docker_image/psalm-result/actions_to_fuzz-output.json"):
+            os.system("rm ./docker_image/psalm-result/actions_to_fuzz-output.json")
 
     start_time = time.time()
     subprocess.call(["./bin/fuzz_object", "plugin", "./wp-plugins/{0}.zip".format(plugin_slug)])

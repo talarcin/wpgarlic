@@ -14,7 +14,7 @@ become_admin = len(sys.argv) > 4 and sys.argv[4] == "BECOME_ADMIN"
 directed = False
 fuzzable_actions = []
 
-if os.path.isdir("../../../fuzzer/psalm-result/"):
+if os.path.isfile("../../../fuzzer/psalm-result/actions_to_fuzz-output.json"):
     sys.stderr.write("Getting fuzzable actions list...\n")
     directed = True
     with open("../../../fuzzer/psalm-result/actions_to_fuzz-output.json") as f:
