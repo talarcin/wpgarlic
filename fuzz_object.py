@@ -169,8 +169,8 @@ def fuzz_object(
                 {
                     "actions",
                     "actions_admin",
-                    # "menu_subscriber",
-                    # "menu_admin",
+                    "menu_subscriber",
+                    "menu_admin",
                     # "files",
                     # "pages_subscriber",
                     # "pages_not_logged_in",
