@@ -11,3 +11,4 @@ wp-plugins/
 
 /psalm/vendor
 /psalm/plugin
+/fuzz-results/
