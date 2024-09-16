@@ -13,7 +13,8 @@ from rich import print
 @click.option("--plugin_slug", required=True, help="Slug of the plugin")
 @click.option("--version", required=True, help="Version number of the plugin")
 @click.option("--no_psalm", is_flag=True, default=False, help="Don't use psalm taint analysis")
-def analyze(plugin_slug, version, no_psalm):
+@click.option("--print_findings", is_flag=True, default=False, help="Print analysis results to file")
+def analyze(plugin_slug, version, no_psalm, print_findings):
     print("Downloading [bold]{0}[/bold] with version [bold]{1}[/bold]".format(plugin_slug, version))
 
     # Check if version of plugin is downloadable
@@ -33,6 +34,9 @@ def analyze(plugin_slug, version, no_psalm):
     req = requests.get(download_link)
 
     if req.ok:
+        if not os.path.isdir("./wp-plugins/"):
+            os.mkdir("./wp-plugins/")
+
         open("./wp-plugins/{0}.zip".format(plugin_slug), "wb").write(req.content)
         print("Extracting plugin to [bold]/psalm/plugin[/bold]...")
         with zipfile.ZipFile(io.BytesIO(req.content)) as zf:
@@ -49,12 +53,15 @@ def analyze(plugin_slug, version, no_psalm):
               "white] are correct.[/red]")
         exit(1)
 
+    if not os.path.isdir("./docker_image/psalm-result/"):
+        os.mkdir("./docker_image/psalm-result/")
+
     if not no_psalm:
         print("Installing composer packages...")
         os.chdir("psalm")
 
-        subprocess.call(["composer", "update"])
-        subprocess.call(["composer", "install"])
+        os.system("composer update")
+        os.system("composer install")
         subprocess.call(["./vendor/bin/psalm", "--init"])
         subprocess.call(["./vendor/bin/psalm-plugin", "enable", "tuncay/psalm-wp-taint"])
 
@@ -62,6 +69,7 @@ def analyze(plugin_slug, version, no_psalm):
         os.chdir("..")
         print("[green bold]Taint analysis finished successfully.[/green bold]")
         print("\n")
+        os.system("rm ./psalm.xml")
         print("Starting fuzzer to fuzz plugin [bold]{0}[/bold] with version {1} from file [bold]{0}.zip[/bold]".format(
             plugin_slug, version))
         print("Copying psalm result files.")
@@ -76,6 +84,11 @@ def analyze(plugin_slug, version, no_psalm):
 
     elapsed_time = end_time - start_time
     print("[bold]Elapsed time is: [green]{0}s[/green][/bold]".format(str(round(elapsed_time, 2))))
+    print("\n")
+
+    if print_findings:
+        print("Printing findings to {}-{}-findings.txt".format(plugin_slug, version))
+        os.system("./bin/print_findings data/object_fuzz_results > {}-{}-findings.txt".format(plugin_slug, version))
 
 
 analyze()
