@@ -6,52 +6,72 @@ import zipfile
 
 import click
 import requests
+from pygments.lexer import using
 from rich import print
 
 
 @click.command()
 @click.option("--plugin_slug", required=True, help="Slug of the plugin")
 @click.option("--version", required=True, help="Version number of the plugin")
+@click.option("--file", help="Path to .zip file of plugin.")
 @click.option("--no_psalm", is_flag=True, default=False, help="Don't use psalm taint analysis")
 @click.option("--print_findings", is_flag=True, default=False, help="Print analysis results to file")
-def analyze(plugin_slug, version, no_psalm, print_findings):
-    print("Downloading [bold]{0}[/bold] with version [bold]{1}[/bold]".format(plugin_slug, version))
+@click.option("--reps", default=1, help="Number of fuzzing repetitions")
+def analyze(plugin_slug, version, file, no_psalm, print_findings, reps):
+    using_file = False
+    if file is not None and os.path.isfile("{0}".format(file)):
+        print("Found file {0}".format(file))
+        print("Using it for the analysis.")
+        using_file = True
+    else:
+        print("No file found under {0}".format(file))
 
-    # Check if version of plugin is downloadable
-    plugin_info_object: dict = requests.get(
-        "https://api.wordpress.org/plugins/info/1.2/?action=plugin_information&request[slug]={0}".format(
-            plugin_slug)).json()
+    if not using_file:
+        print("Downloading [bold]{0}[/bold] with version [bold]{1}[/bold]".format(plugin_slug, version))
+        # Check if version of plugin is downloadable
+        plugin_info_object: dict = requests.get(
+            "https://api.wordpress.org/plugins/info/1.2/?action=plugin_information&request[slug]={0}".format(
+                plugin_slug)).json()
 
-    if (len(plugin_info_object.keys()) == 1 and "error" in plugin_info_object.keys()) or (
-            "versions" in plugin_info_object.keys() and not f"{version}" in plugin_info_object["versions"].keys()):
-        print("[red]Couldn't find a download link for [white]{0}[/white] and version [white]{1}[/white].[/red]".format(
-            plugin_slug, version))
-        exit(1)
+        if (len(plugin_info_object.keys()) == 1 and "error" in plugin_info_object.keys()) or (
+                "versions" in plugin_info_object.keys() and not f"{version}" in plugin_info_object["versions"].keys()):
+            print("[red]Couldn't find a download link for [white]{0}[/white] and version [white]{1}[/white].[/red]\n"
+                  "If you have a .zip file of the plugin check --help to see how to use that instead".format(
+                plugin_slug, version))
+            exit(1)
 
-    download_link: str = plugin_info_object["versions"].get(version)
-    print("Downloading [bold]{0}[/bold] [bold]v{1}[/bold] from {2}".format(plugin_slug, version, download_link))
+        download_link: str = plugin_info_object["versions"].get(version)
+        print("Downloading [bold]{0}[/bold] [bold]v{1}[/bold] from {2}".format(plugin_slug, version, download_link))
 
-    req = requests.get(download_link)
+        req = requests.get(download_link)
 
-    if req.ok:
-        if not os.path.isdir("./wp-plugins/"):
-            os.mkdir("./wp-plugins/")
+        if req.ok:
+            if not os.path.isdir("./wp-plugins/"):
+                os.mkdir("./wp-plugins/")
 
-        open("./wp-plugins/{0}.zip".format(plugin_slug), "wb").write(req.content)
-        print("Extracting plugin to [bold]/psalm/plugin[/bold]...")
-        with zipfile.ZipFile(io.BytesIO(req.content)) as zf:
+            open("./wp-plugins/{0}.zip".format(plugin_slug), "wb").write(req.content)
+            print("Extracting plugin to [bold]/psalm/plugin[/bold]...")
+            with zipfile.ZipFile(io.BytesIO(req.content)) as zf:
 
+                if not os.path.isdir("./psalm/plugin/"):
+                    os.mkdir("./psalm/plugin/")
+
+                zf.extractall("./psalm/plugin/")
+                print("[green]Extraction done[/green]")
+                zf.close()
+        else:
+            print("[red]Failed to download plugin.[/red]")
+            print("[red]Please make sure that the [bold white]plugin slug[/bold white] and [bold white]version[/bold "
+                  "white] are correct.[/red]")
+            exit(1)
+    else:
+        with zipfile.ZipFile("{0}".format(file)) as zf:
             if not os.path.isdir("./psalm/plugin/"):
                 os.mkdir("./psalm/plugin/")
 
             zf.extractall("./psalm/plugin/")
             print("[green]Extraction done[/green]")
             zf.close()
-    else:
-        print("[red]Failed to download plugin.[/red]")
-        print("[red]Please make sure that the [bold white]plugin slug[/bold white] and [bold white]version[/bold "
-              "white] are correct.[/red]")
-        exit(1)
 
     if not os.path.isdir("./docker_image/psalm-result/"):
         os.mkdir("./docker_image/psalm-result/")
@@ -78,13 +98,16 @@ def analyze(plugin_slug, version, no_psalm, print_findings):
         if os.path.isfile("./docker_image/psalm-result/actions_to_fuzz-output.json"):
             os.system("rm ./docker_image/psalm-result/actions_to_fuzz-output.json")
 
-    start_time = time.time()
-    subprocess.call(["./bin/fuzz_object", "plugin", "./wp-plugins/{0}.zip".format(plugin_slug)])
-    end_time = time.time()
+    zipfile_path = "./wp-plugins/{0}.zip".format(plugin_slug) if not using_file else file
 
-    elapsed_time = end_time - start_time
-    print("[bold]Elapsed time is: [green]{0}s[/green][/bold]".format(str(round(elapsed_time, 2))))
-    print("\n")
+    while reps >= 1:
+        start_time = time.time()
+        subprocess.call(["./bin/fuzz_object", "plugin", zipfile_path])
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        print("[bold]Elapsed time is: [green]{0}s[/green][/bold]".format(str(round(elapsed_time, 2))))
+        print("\n")
+        reps -= 1
 
     if print_findings:
         print("Printing findings to {}-{}-findings.txt".format(plugin_slug, version))
