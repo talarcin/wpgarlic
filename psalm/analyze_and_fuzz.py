@@ -23,7 +23,7 @@ def analyze(plugin_slug, version, file, no_psalm, print_findings, reps):
         print("Found file {0}".format(file))
         print("Using it for the analysis.")
         using_file = True
-    else:
+    elif not os.path.isfile("{0}".format(file)):
         print("No file found under {0}".format(file))
 
     if not using_file:
