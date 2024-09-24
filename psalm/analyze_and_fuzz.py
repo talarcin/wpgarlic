@@ -18,15 +18,20 @@ from rich import print
 @click.option("--print_findings", is_flag=True, default=False, help="Print analysis results to file")
 @click.option("--reps", default=1, help="Number of fuzzing repetitions")
 def analyze(plugin_slug, version, file, no_psalm, print_findings, reps):
-    using_file = False
-    if file is not None and os.path.isfile("{0}".format(file)):
-        print("Found file {0}".format(file))
-        print("Using it for the analysis.")
-        using_file = True
-    elif not os.path.isfile("{0}".format(file)):
-        print("No file found under {0}".format(file))
+    zipfile_path = ""
+    if os.path.isfile("./wp-plugins/{0}.{1}.zip".format(plugin_slug, version)):
+        print("[bold]Plugin has already been downloaded. Using it for the analysis.[/bold]")
+        zipfile_path = "./wp-plugins/{0}.{1}.zip".format(plugin_slug, version)
 
-    if not using_file:
+    if file is not None:
+        if os.path.isfile("{0}".format(file)):
+            print("Found file {0}".format(file))
+            print("Using it for the analysis.")
+        else:
+            print("No file found under {0}".format(file))
+            exit(1)
+
+    if file is None and zipfile_path == "":
         print("Downloading [bold]{0}[/bold] with version [bold]{1}[/bold]".format(plugin_slug, version))
         # Check if version of plugin is downloadable
         plugin_info_object: dict = requests.get(
@@ -49,7 +54,7 @@ def analyze(plugin_slug, version, file, no_psalm, print_findings, reps):
             if not os.path.isdir("./wp-plugins/"):
                 os.mkdir("./wp-plugins/")
 
-            open("./wp-plugins/{0}.zip".format(plugin_slug), "wb").write(req.content)
+            open("./wp-plugins/{0}.{1}.zip".format(plugin_slug, version), "wb").write(req.content)
             print("Extracting plugin to [bold]/psalm/plugin[/bold]...")
             with zipfile.ZipFile(io.BytesIO(req.content)) as zf:
 
@@ -64,6 +69,14 @@ def analyze(plugin_slug, version, file, no_psalm, print_findings, reps):
             print("[red]Please make sure that the [bold white]plugin slug[/bold white] and [bold white]version[/bold "
                   "white] are correct.[/red]")
             exit(1)
+    elif zipfile_path != "":
+        with zipfile.ZipFile(zipfile_path) as zf:
+            if not os.path.isdir("./psalm/plugin/"):
+                os.mkdir("./psalm/plugin/")
+
+            zf.extractall("./psalm/plugin/")
+            print("[green]Extraction done[/green]")
+            zf.close()
     else:
         with zipfile.ZipFile("{0}".format(file)) as zf:
             if not os.path.isdir("./psalm/plugin/"):
@@ -82,6 +95,10 @@ def analyze(plugin_slug, version, file, no_psalm, print_findings, reps):
 
         os.system("composer update")
         os.system("composer install")
+
+        if os.path.isfile("./psalm.xml"):
+            os.system("rm ./psalm.xml")
+
         subprocess.call(["./vendor/bin/psalm", "--init"])
         subprocess.call(["./vendor/bin/psalm-plugin", "enable", "tuncay/psalm-wp-taint"])
 
@@ -89,7 +106,6 @@ def analyze(plugin_slug, version, file, no_psalm, print_findings, reps):
         os.chdir("..")
         print("[green bold]Taint analysis finished successfully.[/green bold]")
         print("\n")
-        os.system("rm ./psalm.xml")
         print("Starting fuzzer to fuzz plugin [bold]{0}[/bold] with version {1} from file [bold]{0}.zip[/bold]".format(
             plugin_slug, version))
         print("Copying psalm result files.")
@@ -98,7 +114,7 @@ def analyze(plugin_slug, version, file, no_psalm, print_findings, reps):
         if os.path.isfile("./docker_image/psalm-result/actions_to_fuzz-output.json"):
             os.system("rm ./docker_image/psalm-result/actions_to_fuzz-output.json")
 
-    zipfile_path = "./wp-plugins/{0}.zip".format(plugin_slug) if not using_file else file
+    zipfile_path = "./wp-plugins/{0}.zip".format(plugin_slug) if file is None else file
 
     while reps >= 1:
         start_time = time.time()

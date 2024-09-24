@@ -1,4 +1,5 @@
 import json
+import os
 import random
 import subprocess
 import sys
@@ -9,6 +10,20 @@ payload_id = sys.argv[1]
 actions_to_fuzz = sys.argv[2]
 plugin_slug = sys.argv[3]
 user_id = sys.argv[4]
+
+directed = False
+fuzzable_actions = []
+
+if os.path.isfile("../../../fuzzer/psalm-result/actions_to_fuzz-output.json"):
+    sys.stderr.write("Getting fuzzable actions list...\n")
+    directed = True
+    with open("../../../fuzzer/psalm-result/actions_to_fuzz-output.json") as f:
+        fuzzable_actions = json.load(f)
+
+if len(fuzzable_actions) == 0:
+    sys.stderr.write("No fuzzable actions found.\n")
+    sys.stderr.flush()
+
 
 if actions_to_fuzz == "ALL":
     actions_to_fuzz = subprocess.check_output(
@@ -34,6 +49,8 @@ actions_to_skip = load_blocklists("menu", plugin_slug)
 command_results = []
 for action in actions_to_fuzz:
     if action in actions_to_skip:
+        continue
+    if directed and action not in fuzzable_actions:
         continue
 
     sys.stderr.write(f"Fuzzing: {action}\n")
